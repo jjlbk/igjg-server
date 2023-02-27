@@ -5,6 +5,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
 var indexRouter = require("./routes/index");
+var crawlingRouter = require("./routes/crawling");
 
 var app = express();
 
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/", indexRouter);
+app.use("/crawling", crawlingRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
