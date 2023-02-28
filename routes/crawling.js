@@ -1,14 +1,32 @@
 const express = require("express");
 const router = express.Router();
+
 const axios = require("axios");
 const cheerio = require("cheerio");
 const log = console.log;
+
+const {
+  initializeApp,
+  applicationDefault,
+  cert,
+} = require("firebase-admin/app");
+const {
+  getFirestore,
+  Timestamp,
+  FieldValue,
+} = require("firebase-admin/firestore");
+const serviceAccount = require("./serviceAccountKey.json"); // WARN
+initializeApp({
+  credential: cert(serviceAccount),
+});
+const db = getFirestore();
 
 router.get("/", function (req, res, next) {
   res.send("This is crawling router.");
 });
 
 router.get("/:id", function (req, res, next) {
+  // 데이터 크롤링
   switch (req.params.id) {
     case "1": // 수원특례시
       var getHtml = async () => {
@@ -25,8 +43,8 @@ router.get("/:id", function (req, res, next) {
           // axios 응답 스키마 `data`는 서버가 제공한 응답(데이터)을 받는다.
           // load()는 인자로 html 문자열을 받아 cheerio 객체 반환
           const $ = cheerio.load(html.data);
-          for (let i = 1; i <= 10; i++) {
-            const data = {
+          for (let i = 1; i <= 4; i++) {
+            var data = {
               title: $(
                 "#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(" +
                   i +
@@ -55,10 +73,21 @@ router.get("/:id", function (req, res, next) {
               ).attr("onclick"),
             };
             console.log(data);
+
+            // 데이터 삽입
+            const docRef = db.collection("policies").doc();
+            docRef.set({
+              title: data.title,
+              registrationDate: Timestamp.fromDate(new Date(data.date)),
+              keywords: ["", ""],
+              department: data.dept,
+              contentHTML: "",
+              contentURL: data.url,
+              region: "수원",
+            });
           }
         })
         .then((res) => log(res));
-      break;
     case "2": // 용인특례시
       var getHtml = async () => {
         try {
@@ -74,8 +103,8 @@ router.get("/:id", function (req, res, next) {
           // axios 응답 스키마 `data`는 서버가 제공한 응답(데이터)을 받는다.
           // load()는 인자로 html 문자열을 받아 cheerio 객체 반환
           const $ = cheerio.load(html.data);
-          for (let i = 1; i <= 10; i++) {
-            const data = {
+          for (let i = 1; i <= 4; i++) {
+            var data = {
               title: $(
                 "#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(" +
                   i +
@@ -102,6 +131,17 @@ router.get("/:id", function (req, res, next) {
               ).attr("href"),
             };
             console.log(data);
+
+            const docRef = db.collection("policies").doc();
+            docRef.set({
+              title: data.title,
+              registrationDate: Timestamp.fromDate(new Date(data.date)),
+              keywords: ["", ""],
+              department: data.dept,
+              contentHTML: "",
+              contentURL: data.url,
+              region: "용인",
+            });
           }
         })
         .then((res) => log(res));
@@ -123,8 +163,8 @@ router.get("/:id", function (req, res, next) {
           // axios 응답 스키마 `data`는 서버가 제공한 응답(데이터)을 받는다.
           // load()는 인자로 html 문자열을 받아 cheerio 객체 반환
           const $ = cheerio.load(html.data);
-          for (let i = 1; i <= 10; i++) {
-            const data = {
+          for (let i = 1; i <= 4; i++) {
+            var data = {
               title: $(
                 "#listForm > div.list2table1.rspnsv > table > tbody > tr:nth-child(" +
                   i +
@@ -153,11 +193,23 @@ router.get("/:id", function (req, res, next) {
                 ).attr("href"),
             };
             console.log(data);
+
+            const docRef = db.collection("policies").doc();
+            docRef.set({
+              title: data.title,
+              registrationDate: Timestamp.fromDate(new Date(data.date)),
+              keywords: ["", ""],
+              department: data.dept,
+              contentHTML: "",
+              contentURL: data.url,
+              region: "창원",
+            });
           }
         })
         .then((res) => log(res));
       break;
   }
+
   res.send("This is crawling router.\n Crawling is done.");
 });
 
