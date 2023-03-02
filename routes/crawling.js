@@ -48,11 +48,16 @@ router.get("/:id", function (req, res, next) {
               )
                 .text()
                 .trim(),
-              url: $(
-                "#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(" +
-                  i +
-                  ") > td.p-subject > a"
-              ).attr("onclick"),
+              url:
+                "https://www.suwon.go.kr/web/board/BD_board.view.do?seq=" +
+                $(
+                  "#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(" +
+                    i +
+                    ") > td.p-subject > a"
+                )
+                  .attr("onclick")
+                  .match(/\d+/g)[1] +
+                "&bbsCd=1042&pageType=&showSummaryYn=N&delDesc=&q_ctgCd=&q_currPage=1&q_sortNam",
             };
             console.log(data);
           }
@@ -80,7 +85,9 @@ router.get("/:id", function (req, res, next) {
                 "#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(" +
                   i +
                   ") > td.td_al > a"
-              ).text(),
+              )
+                .text()
+                .trim(),
               dept: $(
                 "#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(" +
                   i +
@@ -95,11 +102,13 @@ router.get("/:id", function (req, res, next) {
               )
                 .text()
                 .trim(),
-              url: $(
-                "#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(" +
-                  i +
-                  ") > td.td_al > a"
-              ).attr("href"),
+              url:
+                "https://www.yongin.go.kr" +
+                $(
+                  "#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(" +
+                    i +
+                    ") > td.td_al > a"
+                ).attr("href"),
             };
             console.log(data);
           }
@@ -107,6 +116,56 @@ router.get("/:id", function (req, res, next) {
         .then((res) => log(res));
       break;
     case "3": // 고양특례시
+      var getHtml = async () => {
+        try {
+          return await axios.get(
+            "https://www.goyang.go.kr/www/user/bbs/BD_selectBbsList.do?q_bbsCode=1030"
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      getHtml()
+        .then((html) => {
+          // axios 응답 스키마 `data`는 서버가 제공한 응답(데이터)을 받는다.
+          // load()는 인자로 html 문자열을 받아 cheerio 객체 반환
+          const $ = cheerio.load(html.data);
+          for (let i = 1; i <= 10; i++) {
+            const data = {
+              title: $(
+                "#content > table > tbody > tr:nth-child(" +
+                  i +
+                  ") > td.subject.text-left > a"
+              )
+                .text()
+                .trim(),
+              dept: $(
+                "#content > table > tbody > tr:nth-child(" +
+                  i +
+                  ") > td:nth-child(3)"
+              )
+                .text()
+                .trim(),
+              date: $(
+                "#content > table > tbody > tr:nth-child(" + i + ") > td.date "
+              )
+                .text()
+                .trim(),
+              url:
+                "https://www.goyang.go.kr/www/user/bbs/BD_selectBbs.do?q_bbsCode=1030&q_bbscttSn=" +
+                $(
+                  "#content > table > tbody > tr:nth-child(" +
+                    i +
+                    ") > td.subject.text-left > a"
+                )
+                  .attr("onclick")
+                  .match(/\d+/g)[1] +
+                "&q_currPage=1&q_pClCode=",
+            };
+            console.log(data);
+          }
+        })
+        .then((res) => log(res));
       break;
     case "4": // 창원특례시
       var getHtml = async () => {
