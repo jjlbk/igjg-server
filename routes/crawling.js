@@ -6,6 +6,8 @@ const { response } = require("express");
 const log = console.log;
 
 
+var startPage = 1, endPage = 10;
+
 router.get("/", function (req, res, next) {
   res.send("This is crawling router.");
 });
@@ -26,8 +28,8 @@ router.get("/:id", function (req, res, next) {
         }
       };
 
-      for (let i = 1; i <= 10; i++) {
-        promises.push(getHtml(i));
+      for (startPage = 1; startPage <= endPage; startPage++) {
+        promises.push(getHtml(startPage));
       }
 
       Promise.all(promises)
@@ -79,8 +81,8 @@ router.get("/:id", function (req, res, next) {
         }
       };
 
-      for (let i = 1; i <= 10; i++) {
-        promises.push(getHtml(i));
+      for (startPage = 1; startPage <= endPage; startPage++) {
+        promises.push(getHtml(startPage));
       }
 
       Promise.all(promises)
@@ -129,8 +131,8 @@ router.get("/:id", function (req, res, next) {
         }
       };
 
-      for (let i = 1; i <= 10; i++) {
-        promises.push(getHtml(i));
+      for (startPage = 1; startPage <= endPage; startPage++) {
+        promises.push(getHtml(startPage));
       }
 
       Promise.all(promises)
@@ -182,8 +184,8 @@ router.get("/:id", function (req, res, next) {
         }
       };
 
-      for (let i = 1; i <= 2; i++) {
-        promises.push(getHtml(i));
+      for (startPage = 1; startPage <= endPage; startPage++) {
+        promises.push(getHtml(startPage));
       }
 
       Promise.all(promises)
