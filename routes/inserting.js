@@ -14,7 +14,7 @@ initializeApp({
 });
 const db = getFirestore();
 
-insertDatasToPolices = (datas) => {
+const insertDatasToPolices = (datas) => {
   for (let data of datas) {
     const docRef = db.collection("policies").doc();
     docRef.set({
@@ -23,13 +23,13 @@ insertDatasToPolices = (datas) => {
       department: data.dept,
       contentURL: data.url,
       contentHTML: data.contentHTML,
-      keywords: ["", ""],
+      keywords: data.keywords,
       region: data.region,
     });
   }
 };
 
-insertDatasToNews = (datas) => {
+const insertDatasToNews = (datas) => {
   for (let data of datas) {
     const docRef = db.collection("news").doc();
     docRef.set({
@@ -38,7 +38,7 @@ insertDatasToNews = (datas) => {
       thumbnailURL: data.thumbnailURL,
       contentURL: data.url,
       contentHTML: data.contentHTML,
-      keywords: ["", ""],
+      keywords: data.keywords,
       region: data.region,
     });
   }
