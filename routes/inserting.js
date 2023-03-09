@@ -22,7 +22,7 @@ const preprocessDatas = async (datas) => {
   var preprocessedDatas = [];
   for (let data of datas) {
     // 형태소 분석
-    var morphemes = await ExecuteMorphModulePromise(data.title);
+    var morphemes = await ExecuteMorphModulePromise(data.contentText);
 
     // 키워드 추출
     var keywords = [];
