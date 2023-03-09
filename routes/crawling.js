@@ -6,7 +6,7 @@ const { response } = require("express");
 const log = console.log;
 
 var startPage = 1,
-  endPage = 2;
+  endPage = 1;
 
 router.get("/", function (req, res, next) {
   res.send("This is crawling router.");
@@ -240,11 +240,11 @@ router.get("/:id", function (req, res, next) {
       }
 
       Promise.all(promises)
-        .then((responses) => {
-          responses.forEach((response) => {
+        .then(async (responses) => {
+          for (const response of responses) {
             const $ = cheerio.load(response.data);
             for (let i = 1; i <= 10; i++) {
-              var concat =
+              const concat =
                 "https://www.suwon.go.kr/web/board/BD_board.view.do?seq=" +
                 $(
                   `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td.p-subject > a`
@@ -259,22 +259,30 @@ router.get("/:id", function (req, res, next) {
                 )
                   .text()
                   .trim(),
-
                 date: $(
                   `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
                 )
                   .text()
                   .trim(),
-
                 url: concat,
                 img: null,
+                html: null,
               };
+
+              const tmp = await axios.get(concat);
+              const htmlString = tmp.data;
+              const $2 = cheerio.load(htmlString);
+              data.html = $2(
+                "#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(3) > td"
+              ).text();
+
               dataArr.push(data);
             }
-          });
+          }
           console.log(dataArr);
         })
         .then((res) => log(res));
+
       break;
 
     case "6": // 용인특례시 보도자료
