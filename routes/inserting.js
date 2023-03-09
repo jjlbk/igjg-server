@@ -14,6 +14,30 @@ initializeApp({
 });
 const db = getFirestore();
 
+var mod = require("korean-text-analytics");
+const util = require("util");
+const ExecuteMorphModulePromise = util.promisify(mod.ExecuteMorphModule);
+
+const preprocessDatas = async (datas) => {
+  var preprocessedDatas = [];
+  for (let data of datas) {
+    // 형태소 분석
+    var morphemes = await ExecuteMorphModulePromise(data.title);
+
+    // 키워드 추출
+    var keywords = [];
+    for (let morpheme of morphemes["morphed"]) {
+      if (["NNG", "NNP", "NNB"].includes(morpheme.tag)) {
+        keywords.push(morpheme.word);
+      }
+    }
+
+    data["keywords"] = keywords;
+    preprocessedDatas.push(data);
+  }
+  return preprocessedDatas;
+};
+
 const insertDatasToPolices = (datas) => {
   for (let data of datas) {
     const docRef = db.collection("policies").doc();
@@ -44,4 +68,4 @@ const insertDatasToNews = (datas) => {
   }
 };
 
-module.exports = { insertDatasToPolices, insertDatasToNews };
+module.exports = { preprocessDatas, insertDatasToPolices, insertDatasToNews };

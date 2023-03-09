@@ -16,7 +16,9 @@
     "firebase-admin": "^11.5.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "korean-text-analytics": "^0.0.7",
+    "morgan": "~1.9.1",
+    "util": "^0.12.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.20",
