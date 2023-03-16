@@ -224,6 +224,7 @@ router.get("/:id", function (req, res, next) {
         .then((res) => log(res));
       break;
 
+    // below line is part of news.js
     case "5": // 수원특례시 보도자료
       var getHtml = async (cpage) => {
         try {

@@ -6,6 +6,7 @@ var logger = require("morgan");
 
 var indexRouter = require("./routes/index");
 var crawlingRouter = require("./routes/crawling");
+var newsRouter = require("./routes/news");
 
 var app = express();
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 
 app.use("/", indexRouter);
 app.use("/crawling", crawlingRouter);
+app.use("/news", newsRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
