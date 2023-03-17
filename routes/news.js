@@ -33,6 +33,9 @@ router.get("/:id", async function (req, res, next) {
       console.log(await getNewsFromChangwon(startPage, endPage));
       break;
   }
+  console.log("\nToday: " + new Date().toISOString().slice(0, 10));
+  console.log('News Log output Complete!!\n\n');
+
   res.send("This is crawling router.\n Crawling is done.");
 });
 

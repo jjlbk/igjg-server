@@ -9,6 +9,7 @@ const log = console.log;
 const getPublishingFromSuwon = async (startPage, endPage) => {
     const dataArr = [];
     const promises = [];
+    const today = new Date().toISOString().slice(0, 10);
 
     const getHtml = async (cpage) => {
         try {
@@ -29,6 +30,16 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
     responses.forEach((response) => {
         const $ = cheerio.load(response.data);
         for (let i = 1; i <= 10; i++) {
+            const uploadDate = $(
+                `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
+            )
+                .text()
+                .replaceAll('/', '-')
+                .trim()
+            if (today !== uploadDate) {
+                break;
+            }
+
             const data = {
                 title: $(
                     `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td.p-subject > a`
@@ -40,11 +51,7 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
                 )
                     .text()
                     .trim(),
-                date: $(
-                    `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
-                )
-                    .text()
-                    .trim(),
+                date: uploadDate,
                 url:
                     "https://www.suwon.go.kr/web/board/BD_board.view.do?seq=" +
                     $(
@@ -65,6 +72,7 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
 const getPublishingFromYongin = async (startPage, endPage) => {
     const dataArr = [];
     const promises = [];
+    const today = new Date().toISOString().slice(0, 10);
 
     const getHtml = async (cpage) => {
         try {
@@ -85,6 +93,16 @@ const getPublishingFromYongin = async (startPage, endPage) => {
     responses.forEach((response) => {
         const $ = cheerio.load(response.data);
         for (let i = 1; i <= 10; i++) {
+            const uploadDate = $(
+                `#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
+            )
+                .text()
+                .replaceAll('/', '-')
+                .trim()
+            if (today !== uploadDate) {
+                break;
+            }
+
             const data = {
                 title: $(
                     `#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(${i}) > td.td_al > a`
@@ -96,11 +114,7 @@ const getPublishingFromYongin = async (startPage, endPage) => {
                 )
                     .text()
                     .trim(),
-                date: $(
-                    `#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
-                )
-                    .text()
-                    .trim(),
+                date: uploadDate,
                 url:
                     "https://www.yongin.go.kr" +
                     $(
@@ -118,6 +132,7 @@ const getPublishingFromYongin = async (startPage, endPage) => {
 const getPublishingFromGoyang = async (startPage, endPage) => {
     const dataArr = [];
     const promises = [];
+    const today = new Date().toISOString().slice(0, 10);
 
     const getHtml = async (cpage) => {
         try {
@@ -138,6 +153,16 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
     responses.forEach((response) => {
         const $ = cheerio.load(response.data);
         for (let i = 1; i <= 10; i++) {
+            const uploadDate = $(
+                `#content > table > tbody > tr:nth-child(${i}) > td.date`
+            )
+                .text()
+                .replaceAll('.', '-')
+                .trim()
+            if (today !== uploadDate) {
+                break;
+            }
+
             const data = {
                 title: $(
                     `#content > table > tbody > tr:nth-child(${i}) > td.subject.text-left > a`
@@ -149,11 +174,7 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
                 )
                     .text()
                     .trim(),
-                date: $(
-                    `#content > table > tbody > tr:nth-child(${i}) > td.date`
-                )
-                    .text()
-                    .trim(),
+                date: uploadDate,
                 url:
                     "https://www.goyang.go.kr/www/user/bbs/BD_selectBbs.do?q_bbsCode=1030&q_bbscttSn=" +
                     $(
@@ -174,6 +195,7 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
 const getPublishingFromChangwon = async (startPage, endPage) => {
     const dataArr = [];
     const promises = [];
+    const today = new Date().toISOString().slice(0, 10);
 
     const getHtml = async (cpage) => {
         try {
@@ -193,6 +215,15 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
     responses.forEach((response) => {
         const $ = cheerio.load(response.data);
         for (let i = 1; i <= 10; i++) {
+            const uploadDate = $(
+                `#listForm > div.list2table1.rspnsv > table > tbody > tr:nth-child(${i}) > td:nth-child(4)`
+            )
+                .text()
+                .trim()
+            if (today !== uploadDate) {
+                break;
+            }
+
             const data = {
                 title: $(
                     `#listForm > div.list2table1.rspnsv > table > tbody > tr:nth-child(${i}) > td.tal > a`
@@ -205,11 +236,7 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
                 )
                     .text()
                     .trim(),
-                date: $(
-                    `#listForm > div.list2table1.rspnsv > table > tbody > tr:nth-child(${i}) > td:nth-child(4)`
-                )
-                    .text()
-                    .trim(),
+                date: uploadDate,
                 url:
                     "https://www.changwon.go.kr/cwportal/10310/10429/10430.web" +
                     $(

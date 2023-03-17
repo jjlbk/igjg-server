@@ -9,7 +9,7 @@ const log = console.log;
 const { getPublishingFromSuwon, getPublishingFromYongin, getPublishingFromGoyang, getPublishingFromChangwon } = require('./publishingModule');
 
 var startPage = 1,
-  endPage = 1;
+  endPage = 10;
 
 router.get("/", function (req, res, next) {
   res.send("This is crawling router.");
@@ -33,6 +33,9 @@ router.get("/:id", async function (req, res, next) {
       console.log(await getPublishingFromChangwon(startPage, endPage));
       break;
   }
+  console.log("\nToday: " + new Date().toISOString().slice(0, 10));
+  console.log('Publishing Log output Complete!!\n\n');
+
   res.send("This is crawling router.\n Crawling is done.");
 });
 
