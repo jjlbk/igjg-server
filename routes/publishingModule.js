@@ -178,8 +178,7 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
     const getHtml = async (cpage) => {
         try {
             return await axios.get(
-                `https://www.goyang.go.kr/www/user/bbs/BD_selectBbsList.do?q_bbsCode=1030&q_currPage=${cpage}&q_pClCode=&q_clCode=&q_clNm=&q_searchKey=1000&q_searchVal=`
-            );
+                `https://www.changwon.go.kr/cwportal/10310/10429/10430.web?gcode=1009&cpage=${cpage}`);
         } catch (error) {
             console.error(error);
         }
