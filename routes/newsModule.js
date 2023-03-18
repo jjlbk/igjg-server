@@ -6,7 +6,7 @@ const { response } = require("express");
 const log = console.log;
 
 // 보도자료 모듈
-// data = [title, date, url, img, html]
+// data = [title, date, url, img, html, region]
 
 // 수원특례시 보도자료 모듈
 const getNewsFromSuwon = async (startPage, endPage) => {
