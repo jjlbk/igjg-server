@@ -5,6 +5,9 @@ const cheerio = require("cheerio");
 const { response } = require("express");
 const log = console.log;
 
+// 시정소식 모듈
+// data = [title, dept, date, url, region]
+
 // 수원특례시 시정소식 모듈
 const getPublishingFromSuwon = async (startPage, endPage) => {
   const dataArr = [];
@@ -60,6 +63,7 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
             .attr("onclick")
             .match(/\d+/g)[1] +
           "&bbsCd=1042&pageType=&showSummaryYn=N&delDesc=&q_ctgCd=&q_currPage=1&q_sortNam",
+        region: "Suwon",
       };
       dataArr.push(data);
     }
@@ -120,6 +124,7 @@ const getPublishingFromYongin = async (startPage, endPage) => {
           $(
             `#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(${i}) > td.td_al > a`
           ).attr("href"),
+        region: "Yongin",
       };
       dataArr.push(data);
     }
@@ -183,6 +188,7 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
             .attr("onclick")
             .match(/\d+/g)[1] +
           "&q_currPage=1&q_pClCode=",
+        region: "Goyang",
       };
       dataArr.push(data);
     }
@@ -243,6 +249,7 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
           $(
             `#listForm > div.list2table1.rspnsv > table > tbody > tr:nth-child(${i}) > td.tal > a`
           ).attr("href"),
+        region: "Changwon",
       };
       dataArr.push(data);
     }

@@ -13,6 +13,8 @@ const {
   getPublishingFromChangwon,
 } = require("./publishingModule");
 
+const { insertDatasToPolices } = require("./inserting");
+
 var startPage = 1,
   endPage = 10;
 
@@ -23,21 +25,23 @@ router.get("/", function (req, res, next) {
 router.get("/:id", async function (req, res, next) {
   switch (req.params.id) {
     case "1": // 수원특례시
-      console.log(await getPublishingFromSuwon(startPage, endPage));
+      publishingData = await getPublishingFromSuwon(startPage, endPage);
       break;
 
     case "2": // 용인특례시
-      console.log(await getPublishingFromYongin(startPage, endPage));
+      publishingData = await getPublishingFromYongin(startPage, endPage);
       break;
 
     case "3": // 고양특례시
-      console.log(await getPublishingFromGoyang(startPage, endPage));
+      publishingData = await getPublishingFromGoyang(startPage, endPage);
       break;
 
     case "4": // 창원특례시
-      console.log(await getPublishingFromChangwon(startPage, endPage));
+      publishingData = await getPublishingFromChangwon(startPage, endPage);
       break;
   }
+  insertDatasToPolices(publishingData);
+  console.log(publishingData);
   console.log("\nToday: " + new Date().toISOString().slice(0, 10));
   console.log("Publishing Log output Complete!!\n\n");
 

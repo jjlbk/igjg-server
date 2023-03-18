@@ -5,6 +5,9 @@ const cheerio = require("cheerio");
 const { response } = require("express");
 const log = console.log;
 
+// 보도자료 모듈
+// data = [title, date, url, img, html]
+
 // 수원특례시 보도자료 모듈
 const getNewsFromSuwon = async (startPage, endPage) => {
   const dataArr = [];
@@ -57,6 +60,7 @@ const getNewsFromSuwon = async (startPage, endPage) => {
         date: uploadDate,
         url: concat,
         img: null,
+        region: "Suwon",
       };
 
       // inner page crawling
@@ -141,6 +145,7 @@ const getNewsFromYongin = async (startPage, endPage) => {
           $(
             `#contents > div.cont_box > div.t_photo > ul > li:nth-child(${i}) > div > p > a > img`
           ).attr("src"),
+        region: "Yongin",
       };
       // inner page crawling
       const tmp = await axios.get(concat);
@@ -213,6 +218,7 @@ const getNewsFromGoyang = async (startPage, endPage) => {
         date: uploadDate,
         url: concat,
         img: null,
+        region: "Goyang",
       };
 
       // inner page crawling
@@ -282,6 +288,7 @@ const getNewsFromChangwon = async (startPage, endPage) => {
         date: uploadDate,
         url: concat,
         img: null,
+        region: "Changwon",
       };
 
       // inner page crawling

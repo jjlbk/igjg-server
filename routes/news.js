@@ -13,6 +13,8 @@ const {
   getNewsFromChangwon,
 } = require("./newsModule");
 
+const { insertDatasToNews } = require("./inserting");
+
 var startPage = 1,
   endPage = 1;
 
@@ -23,21 +25,23 @@ router.get("/", function (req, res, next) {
 router.get("/:id", async function (req, res, next) {
   switch (req.params.id) {
     case "1": // 수원특례시
-      console.log(await getNewsFromSuwon(startPage, endPage));
+      newsData = await getNewsFromSuwon(startPage, endPage);
       break;
 
     case "2": // 용인특례시
-      console.log(await getNewsFromYongin(startPage, endPage));
+      newsData = await getNewsFromYongin(startPage, endPage);
       break;
 
     case "3": // 고양특례시
-      console.log(await getNewsFromGoyang(startPage, endPage));
+      newsData = await getNewsFromGoyang(startPage, endPage);
       break;
 
     case "4": // 창원특례시
-      console.log(await getNewsFromChangwon(startPage, endPage));
+      newsData = await getNewsFromChangwon(startPage, endPage);
       break;
   }
+  insertDatasToNews(newsData);
+  console.log(newsData);
   console.log("\nToday: " + new Date().toISOString().slice(0, 10));
   console.log("News Log output Complete!!\n\n");
 

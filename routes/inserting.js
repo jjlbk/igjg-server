@@ -46,7 +46,7 @@ const insertDatasToPolices = (datas) => {
       registrationDate: Timestamp.fromDate(new Date(data.date)),
       department: data.dept,
       contentURL: data.url,
-      contentHTML: data.contentHTML,
+      // contentHTML: data.contentHTML,
       keywords: data.keywords,
       region: data.region,
     });
