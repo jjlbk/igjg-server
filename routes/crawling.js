@@ -6,7 +6,12 @@ const { response } = require("express");
 const log = console.log;
 
 // 디버깅용
-const { getPublishingFromSuwon, getPublishingFromYongin, getPublishingFromGoyang, getPublishingFromChangwon } = require('./publishingModule');
+const {
+  getPublishingFromSuwon,
+  getPublishingFromYongin,
+  getPublishingFromGoyang,
+  getPublishingFromChangwon,
+} = require("./publishingModule");
 
 var startPage = 1,
   endPage = 10;
@@ -34,9 +39,9 @@ router.get("/:id", async function (req, res, next) {
       break;
   }
   console.log("\nToday: " + new Date().toISOString().slice(0, 10));
-  console.log('Publishing Log output Complete!!\n\n');
+  console.log("Publishing Log output Complete!!\n\n");
 
   res.send("This is crawling router.\n Crawling is done.");
 });
 
-module.exports = router
+module.exports = router;
