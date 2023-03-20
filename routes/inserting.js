@@ -38,7 +38,7 @@ const preprocessDatas = async (datas) => {
   return preprocessedDatas;
 };
 
-const insertDatasToPolices = (datas) => {
+const insertDatasToPolices = async (datas) => {
   for (let data of datas) {
     const docRef = db.collection("policies").doc();
     docRef.set({
@@ -50,10 +50,25 @@ const insertDatasToPolices = (datas) => {
       keywords: data.keywords,
       region: data.region,
     });
+
+    for (let keyword of data.keywords) {
+      const keywordsRef = db.collection(`/regions/${data.region}/keywords`);
+      const keywordRes = keywordsRef.doc(keyword).get();
+
+      if (!(await keywordRes).exists) {
+        await keywordsRef.doc(keyword).set({
+          frequency: 1,
+        });
+      } else {
+        await keywordsRef.doc(keyword).update({
+          frequency: FieldValue.increment(1),
+        });
+      }
+    }
   }
 };
 
-const insertDatasToNews = (datas) => {
+const insertDatasToNews = async (datas) => {
   for (let data of datas) {
     const docRef = db.collection("news").doc();
     docRef.set({
@@ -65,6 +80,21 @@ const insertDatasToNews = (datas) => {
       keywords: data.keywords,
       region: data.region,
     });
+
+    for (let keyword of data.keywords) {
+      const keywordsRef = db.collection(`/regions/${data.region}/keywords`);
+      const keywordRes = keywordsRef.doc(keyword).get();
+
+      if (!(await keywordRes).exists) {
+        await keywordsRef.doc(keyword).set({
+          frequency: 1,
+        });
+      } else {
+        await keywordsRef.doc(keyword).update({
+          frequency: FieldValue.increment(1),
+        });
+      }
+    }
   }
 };
 
