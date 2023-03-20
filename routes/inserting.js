@@ -46,7 +46,7 @@ const insertDatasToPolices = (datas) => {
       registrationDate: Timestamp.fromDate(new Date(data.date)),
       department: data.dept,
       contentURL: data.url,
-      contentHTML: data.contentHTML,
+      // contentHTML: data.contentHTML,
       keywords: data.keywords,
       region: data.region,
     });
@@ -59,9 +59,9 @@ const insertDatasToNews = (datas) => {
     docRef.set({
       title: data.title,
       registrationDate: Timestamp.fromDate(new Date(data.date)),
-      thumbnailURL: data.thumbnailURL,
+      thumbnailURL: data.img,
       contentURL: data.url,
-      contentHTML: data.contentHTML,
+      contentHTML: data.html,
       keywords: data.keywords,
       region: data.region,
     });
