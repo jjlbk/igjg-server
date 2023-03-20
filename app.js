@@ -3,11 +3,23 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const dotenv = require("dotenv");
+
+const {
+  initializeApp,
+  applicationDefault,
+  cert,
+} = require("firebase-admin/app");
+const serviceAccount = require("./serviceAccountKey.json");
+initializeApp({
+  credential: cert(serviceAccount),
+});
 
 var indexRouter = require("./routes/index");
 var crawlingRouter = require("./routes/crawling");
 var newsRouter = require("./routes/news");
 
+dotenv.config();
 var app = express();
 
 app.use(logger("dev"));
@@ -32,6 +44,5 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.send("error");
 });
-
 
 module.exports = app;
