@@ -6,11 +6,13 @@ const { response } = require("express");
 const log = console.log;
 
 // 시정소식 모듈
-// data = [title, dept, date, url, region]
+// data = [title, dept, date, url, region, keywords]
+
+const { preprocessDatas } = require("./inserting");
 
 // 수원특례시 시정소식 모듈
 const getPublishingFromSuwon = async (startPage, endPage) => {
-  const dataArr = [];
+  var dataArr = [];
   const promises = [];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -30,7 +32,7 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
 
   const responses = await Promise.all(promises);
 
-  responses.forEach((response) => {
+  for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
       const uploadDate = $(
@@ -65,9 +67,21 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
           "&bbsCd=1042&pageType=&showSummaryYn=N&delDesc=&q_ctgCd=&q_currPage=1&q_sortNam",
         region: "Suwon",
       };
+
+      // inner page crawling
+      const tmp = await axios.get(data.url);
+      const htmlString = tmp.data;
+      const $2 = cheerio.load(htmlString);
+
+      // keywords
+      data.contentText = $2(
+        "#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(5) > td"
+      ).text();
+
       dataArr.push(data);
     }
-  });
+  }
+  dataArr = preprocessDatas(dataArr);
 
   return dataArr;
 };

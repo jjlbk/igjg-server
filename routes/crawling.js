@@ -40,7 +40,7 @@ router.get("/:id", async function (req, res, next) {
       publishingData = await getPublishingFromChangwon(startPage, endPage);
       break;
   }
-  insertDatasToPolices(publishingData);
+  // insertDatasToPolices(publishingData);
   console.log(publishingData);
   console.log("\nToday: " + new Date().toISOString().slice(0, 10));
   console.log("Publishing Log output Complete!!\n\n");

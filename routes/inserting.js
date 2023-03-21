@@ -21,18 +21,21 @@ const ExecuteMorphModulePromise = util.promisify(mod.ExecuteMorphModule);
 const preprocessDatas = async (datas) => {
   var preprocessedDatas = [];
   for (let data of datas) {
+    console.log("test message: ", data.contentText);
     // 형태소 분석
-    var morphemes = await ExecuteMorphModulePromise(data.contentText);
-
+    var morphemes = await ExecuteMorphModulePromise(
+      encodeURIComponent(data.contentText)
+    );
     // 키워드 추출
     var keywords = [];
     for (let morpheme of morphemes["morphed"]) {
       if (["NNG", "NNP", "NNB"].includes(morpheme.tag)) {
-        keywords.push(morpheme.word);
+        console.log("keywords test: ", morpheme.word);
       }
     }
 
-    data["keywords"] = keywords;
+    data.contentText = encodeURIComponent(data.contentText);
+    data.keywords = keywords.map((keyword) => encodeURIComponent(keyword));
     preprocessedDatas.push(data);
   }
   return preprocessedDatas;

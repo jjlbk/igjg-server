@@ -18,10 +18,15 @@
     "jade": "~1.11.0",
     "korean-text-analytics": "^0.0.7",
     "morgan": "~1.9.1",
+    "npm": "^9.6.2",
     "util": "^0.12.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.20",
-    "prettier": "^2.8.4"
-  }
+    "prettier": "^2.8.6"
+  },
+  "description": "",
+  "main": "app.js",
+  "author": "",
+  "license": "ISC"
 }
