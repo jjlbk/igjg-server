@@ -19,33 +19,45 @@ const gettingPopulationsDatas = () => {
 
 // c1: region number of KOSIS
 const gettingPopulationDataPerRegion = async (c1) => {
-  var PopulationDataFileds = (
+  var populationDataFileds = (
     await axios.get(
       `https://kosis.kr/openapi/Param/statisticsParameterData.do?method=getList&apiKey=${process.env.KOSIS_API_KEY}&itmId=T1+&objL1=${c1}+&objL2=10+11+15+16+17+18+20+21+30+31+&objL3=&objL4=&objL5=&objL6=&objL7=&objL8=&format=json&jsonVD=Y&prdSe=M&newEstPrdCnt=1&orgId=101&tblId=DT_1B8000G`
     )
   ).data;
 
-  var PopulationData = {};
-  for (let PopulationDataFiled of PopulationDataFileds) {
-    PopulationData[PopulationDataFiled["C2_NM_ENG"]] =
-      PopulationDataFiled["DT"];
+  var populationData = {};
+  for (let populationDataFiled of populationDataFileds) {
+    populationData[populationDataFiled["C2_NM_ENG"]] =
+      populationDataFiled["DT"];
   }
 
   const snapshot = await db
     .doc(
-      `regions/${PopulationDataFileds[0]["C1_NM_ENG"]}/populations/${PopulationDataFileds[0]["PRD_DE"]}`
+      `regions/${populationDataFileds[0]["C1_NM_ENG"]}/populations/${populationDataFileds[0]["PRD_DE"]}`
     )
     .get();
 
   if (snapshot.exists) {
     db.doc(
-      `regions/${PopulationDataFileds[0]["C1_NM_ENG"]}/populations/${PopulationDataFileds[0]["PRD_DE"]}`
-    ).update(PopulationData);
+      `regions/${populationDataFileds[0]["C1_NM_ENG"]}/populations/${populationDataFileds[0]["PRD_DE"]}`
+    ).update(populationData);
   } else {
     db.doc(
-      `regions/${PopulationDataFileds[0]["C1_NM_ENG"]}/populations/${PopulationDataFileds[0]["PRD_DE"]}`
-    ).set(PopulationData);
+      `regions/${populationDataFileds[0]["C1_NM_ENG"]}/populations/${populationDataFileds[0]["PRD_DE"]}`
+    ).set(populationData);
   }
+
+  var populationSnippetData = {};
+  populationSnippetData["births"] = populationData["Live births(persons)"];
+  populationSnippetData["deaths"] = populationData["Deaths(persons)"];
+  populationSnippetData["decrease"] =
+    populationData["Natural increase(persons)"];
+
+  db.doc(`regions/${populationDataFileds[0]["C1_NM_ENG"]}`).update({
+    "populationSnippet.births": populationData["Live births(persons)"],
+    "populationSnippet.deaths": populationData["Deaths(persons)"],
+    "populationSnippet.decrease": populationData["Natural increase(persons)"],
+  });
 };
 
 const gettingHouseholdsDatas = async () => {
@@ -75,6 +87,10 @@ const gettingHouseholdsDatas = async () => {
         households: householdsData["DT"],
       });
     }
+
+    db.doc(`regions/${householdsData["C1_NM_ENG"]}`).update({
+      "populationSnippet.population": householdsData["DT"],
+    });
   }
 };
 
