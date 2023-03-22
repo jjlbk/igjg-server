@@ -21,21 +21,27 @@ const ExecuteMorphModulePromise = util.promisify(mod.ExecuteMorphModule);
 const preprocessDatas = async (datas) => {
   var preprocessedDatas = [];
   for (let data of datas) {
-    console.log("test message: ", data.contentText);
+    // 한글 제외하고 모조리 제거
+    if (!/^[^\u0000-\u007F]*$/.test(data.contentText)) {
+      data.contentText = data.contentText.replace(
+        /[^\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7FF\uFF00-\uFFEF]/g,
+        " "
+      );
+      console.log("replace test: ", data.contentText);
+    }
+
     // 형태소 분석
-    var morphemes = await ExecuteMorphModulePromise(
-      encodeURIComponent(data.contentText)
-    );
+    var morphemes = await ExecuteMorphModulePromise(data.contentText);
+
     // 키워드 추출
     var keywords = [];
     for (let morpheme of morphemes["morphed"]) {
       if (["NNG", "NNP", "NNB"].includes(morpheme.tag)) {
-        console.log("keywords test: ", morpheme.word);
+        keywords.push(morpheme.word);
       }
     }
-
-    data.contentText = encodeURIComponent(data.contentText);
-    data.keywords = keywords.map((keyword) => encodeURIComponent(keyword));
+    console.log("keywords test: ", keywords);
+    data.keywords = keywords;
     preprocessedDatas.push(data);
   }
   return preprocessedDatas;
