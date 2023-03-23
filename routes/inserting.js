@@ -68,7 +68,7 @@ const insertDatasToNews = (datas) => {
       registrationDate: Timestamp.fromDate(new Date(data.date)),
       thumbnailURL: data.img,
       contentURL: data.url,
-      contentHTML: data.html,
+      contentText: data.contentText,
       keywords: data.keywords,
       region: data.region,
     });
