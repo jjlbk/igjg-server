@@ -6,7 +6,7 @@ const { response } = require("express");
 const log = console.log;
 
 // 시정소식 모듈
-// data = [title, dept, date, url, region, contentText, keywords]
+// data = [title, dept, date, url, region, contextHtml, contentText, keywords]
 
 const { preprocessDatas } = require("./inserting");
 
