@@ -79,7 +79,6 @@ const getNewsFromSuwon = async (startPage, endPage) => {
       data.contentText = $2(
         "#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(3) > td"
       ).text();
-      console.log("img test:", $2(imgTag).attr("onclick"));
       if ($2(imgTag).attr("onclick") != undefined) {
         data.img = $2(imgTag)
           .attr("onclick")
