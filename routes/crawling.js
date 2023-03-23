@@ -16,7 +16,7 @@ const {
 const { insertDatasToPolices } = require("./inserting");
 
 var startPage = 1,
-  endPage = 10;
+  endPage = 2;
 
 router.get("/", function (req, res, next) {
   res.send("This is crawling router.");
@@ -46,6 +46,7 @@ router.get("/:id", async function (req, res, next) {
   console.log("Publishing Log output Complete!!\n\n");
 
   res.send("This is crawling router.\n Crawling is done.");
+  res.end();
 });
 
 module.exports = router;

@@ -27,7 +27,6 @@ const preprocessDatas = async (datas) => {
         /[^\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7FF\uFF00-\uFFEF]/g,
         " "
       );
-      console.log("replace test: ", data.contentText);
     }
 
     // 형태소 분석
@@ -40,7 +39,6 @@ const preprocessDatas = async (datas) => {
         keywords.push(morpheme.word);
       }
     }
-    console.log("keywords test: ", keywords);
     data.keywords = keywords;
     preprocessedDatas.push(data);
   }
