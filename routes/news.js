@@ -16,7 +16,7 @@ const {
 const { insertDatasToNews } = require("./inserting");
 
 var startPage = 1,
-  endPage = 1;
+  endPage = 2;
 
 router.get("/", function (req, res, next) {
   res.send("This is crawling router.");
@@ -40,7 +40,7 @@ router.get("/:id", async function (req, res, next) {
       newsData = await getNewsFromChangwon(startPage, endPage);
       break;
   }
-  // insertDatasToNews(newsData);
+  insertDatasToNews(newsData);
   console.log(newsData);
   console.log("\nToday: " + new Date().toISOString().slice(0, 10));
   console.log("News Log output Complete!!\n\n");
