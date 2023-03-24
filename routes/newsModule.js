@@ -6,11 +6,16 @@ const { response } = require("express");
 const log = console.log;
 
 // 보도자료 모듈
-// data = [title, date, url, img, html, region]
+// data = [title, date, url, img, region, contentText, keywords]
+
+const { preprocessDatas } = require("./inserting");
+
+// 0: 전부 확인, 1: 오늘 날짜만 확인
+const printToday = 1;
 
 // 수원특례시 보도자료 모듈
 const getNewsFromSuwon = async (startPage, endPage) => {
-  const dataArr = [];
+  var dataArr = [];
   const promises = [];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -38,7 +43,7 @@ const getNewsFromSuwon = async (startPage, endPage) => {
       )
         .text()
         .trim();
-      if (today !== uploadDate) {
+      if (today !== uploadDate && printToday == 1) {
         break;
       }
 
@@ -70,11 +75,10 @@ const getNewsFromSuwon = async (startPage, endPage) => {
       const imgTag =
         "#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td > ul > li:nth-child(2) > a.p-attach__preview.p-button";
 
-      // html, img
-      data.html = $2(
+      // contentText, img
+      data.contentText = $2(
         "#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(3) > td"
       ).text();
-
       if ($2(imgTag).attr("onclick") != undefined) {
         data.img = $2(imgTag)
           .attr("onclick")
@@ -84,13 +88,14 @@ const getNewsFromSuwon = async (startPage, endPage) => {
       dataArr.push(data);
     }
   }
+  dataArr = preprocessDatas(dataArr);
 
   return dataArr;
 };
 
 // 용인특례시 보도자료 모듈
 const getNewsFromYongin = async (startPage, endPage) => {
-  const dataArr = [];
+  var dataArr = [];
   const promises = [];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -118,7 +123,7 @@ const getNewsFromYongin = async (startPage, endPage) => {
       )
         .text()
         .trim();
-      if (today !== uploadDate) {
+      if (today !== uploadDate && printToday == 1) {
         break;
       }
 
@@ -152,21 +157,22 @@ const getNewsFromYongin = async (startPage, endPage) => {
       const htmlString = tmp.data;
       const $2 = cheerio.load(htmlString);
 
-      // html, img
-      data.html = $2(
+      // contentText, img
+      data.contentText = $2(
         "#contentsTable > tbody > tr:nth-child(4) > td > div.txt"
       ).text();
 
       dataArr.push(data);
     }
   }
+  dataArr = preprocessDatas(dataArr);
 
   return dataArr;
 };
 
 // 고양특례시 보도자료 모듈
 const getNewsFromGoyang = async (startPage, endPage) => {
-  const dataArr = [];
+  var dataArr = [];
   const promises = [];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -195,7 +201,7 @@ const getNewsFromGoyang = async (startPage, endPage) => {
         .text()
         .replaceAll(".", "-")
         .trim();
-      if (today !== uploadDate) {
+      if (today !== uploadDate && printToday == 1) {
         break;
       }
 
@@ -228,7 +234,7 @@ const getNewsFromGoyang = async (startPage, endPage) => {
       const imgTag = "#mobileView > div > img";
 
       // html, img
-      data.html = $2("#mobileView > p").text();
+      data.contentText = $2("#mobileView > p").text();
 
       if ($2(imgTag).attr("src") != undefined) {
         data.img = "https://www.goyang.go.kr/" + $2(imgTag).attr("src");
@@ -237,13 +243,14 @@ const getNewsFromGoyang = async (startPage, endPage) => {
       dataArr.push(data);
     }
   }
+  dataArr = preprocessDatas(dataArr);
 
   return dataArr;
 };
 
 // 창원특례시 보도자료 모듈
 const getNewsFromChangwon = async (startPage, endPage) => {
-  const dataArr = [];
+  var dataArr = [];
   const promises = [];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -271,7 +278,7 @@ const getNewsFromChangwon = async (startPage, endPage) => {
       )
         .text()
         .trim();
-      if (today !== uploadDate) {
+      if (today !== uploadDate && printToday == 1) {
         break;
       }
 
@@ -299,7 +306,7 @@ const getNewsFromChangwon = async (startPage, endPage) => {
         "#body_content > div > div.bbs1view1 > div.substance > div > div > p > img";
 
       // html, img
-      data.html = $2(
+      data.contentText = $2(
         "#body_content > div > div.bbs1view1 > div.substance"
       ).text();
 
@@ -310,6 +317,7 @@ const getNewsFromChangwon = async (startPage, endPage) => {
       dataArr.push(data);
     }
   }
+  dataArr = preprocessDatas(dataArr);
 
   return dataArr;
 };

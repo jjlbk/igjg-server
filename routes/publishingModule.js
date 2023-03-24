@@ -6,11 +6,16 @@ const { response } = require("express");
 const log = console.log;
 
 // 시정소식 모듈
-// data = [title, dept, date, url, region]
+// data = [title, dept, date, url, region, contextHtml, contentText, keywords]
+
+const { preprocessDatas } = require("./inserting");
+
+// 오늘 날짜만 확인
+const printToday = 1;
 
 // 수원특례시 시정소식 모듈
 const getPublishingFromSuwon = async (startPage, endPage) => {
-  const dataArr = [];
+  var dataArr = [];
   const promises = [];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -30,7 +35,7 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
 
   const responses = await Promise.all(promises);
 
-  responses.forEach((response) => {
+  for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
       const uploadDate = $(
@@ -39,7 +44,7 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
         .text()
         .replaceAll("/", "-")
         .trim();
-      if (today !== uploadDate) {
+      if (today !== uploadDate && printToday == 1) {
         break;
       }
 
@@ -65,16 +70,28 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
           "&bbsCd=1042&pageType=&showSummaryYn=N&delDesc=&q_ctgCd=&q_currPage=1&q_sortNam",
         region: "Suwon",
       };
+
+      // inner page crawling
+      const tmp = await axios.get(data.url);
+      const htmlString = tmp.data;
+      const $2 = cheerio.load(htmlString);
+
+      // keywords
+      data.contentText = $2(
+        "#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(5) > td"
+      ).text();
+
       dataArr.push(data);
     }
-  });
+  }
+  dataArr = preprocessDatas(dataArr);
 
   return dataArr;
 };
 
 // 용인특례시 시정소식 모듈
 const getPublishingFromYongin = async (startPage, endPage) => {
-  const dataArr = [];
+  var dataArr = [];
   const promises = [];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -94,7 +111,7 @@ const getPublishingFromYongin = async (startPage, endPage) => {
 
   const responses = await Promise.all(promises);
 
-  responses.forEach((response) => {
+  for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
       const uploadDate = $(
@@ -103,7 +120,7 @@ const getPublishingFromYongin = async (startPage, endPage) => {
         .text()
         .replaceAll("/", "-")
         .trim();
-      if (today !== uploadDate) {
+      if (today !== uploadDate && printToday == 1) {
         break;
       }
 
@@ -126,16 +143,28 @@ const getPublishingFromYongin = async (startPage, endPage) => {
           ).attr("href"),
         region: "Yongin",
       };
+
+      // inner page crawling
+      const tmp = await axios.get(data.url);
+      const htmlString = tmp.data;
+      const $2 = cheerio.load(htmlString);
+      // keywords
+
+      data.contentText = $2(
+        "#contents > div.cont_box > div.t_view > table:nth-child(2) > tbody > tr > td"
+      ).text();
+
       dataArr.push(data);
     }
-  });
+  }
+  dataArr = preprocessDatas(dataArr);
 
   return dataArr;
 };
 
 // 고양특례시 시정소식 모듈
 const getPublishingFromGoyang = async (startPage, endPage) => {
-  const dataArr = [];
+  var dataArr = [];
   const promises = [];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -155,7 +184,7 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
 
   const responses = await Promise.all(promises);
 
-  responses.forEach((response) => {
+  for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
       const uploadDate = $(
@@ -164,7 +193,7 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
         .text()
         .replaceAll(".", "-")
         .trim();
-      if (today !== uploadDate) {
+      if (today !== uploadDate && printToday == 1) {
         break;
       }
 
@@ -190,16 +219,26 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
           "&q_currPage=1&q_pClCode=",
         region: "Goyang",
       };
+
+      // inner page crawling
+      const tmp = await axios.get(data.url);
+      const htmlString = tmp.data;
+      const $2 = cheerio.load(htmlString);
+      // keywords
+
+      data.contentText = $2("#content > div.bbs-article > div > p").text();
+
       dataArr.push(data);
     }
-  });
+  }
+  dataArr = preprocessDatas(dataArr);
 
   return dataArr;
 };
 
 // 창원특례시 시정소식 모듈
 const getPublishingFromChangwon = async (startPage, endPage) => {
-  const dataArr = [];
+  var dataArr = [];
   const promises = [];
   const today = new Date().toISOString().slice(0, 10);
 
@@ -219,7 +258,7 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
 
   const responses = await Promise.all(promises);
 
-  responses.forEach((response) => {
+  for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
       const uploadDate = $(
@@ -227,7 +266,7 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
       )
         .text()
         .trim();
-      if (today !== uploadDate) {
+      if (today !== uploadDate && printToday == 1) {
         break;
       }
 
@@ -251,9 +290,21 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
           ).attr("href"),
         region: "Changwon",
       };
+
+      // inner page crawling
+      const tmp = await axios.get(data.url);
+      const htmlString = tmp.data;
+      const $2 = cheerio.load(htmlString);
+      // keywords
+
+      data.contentText = $2(
+        "#body_content > div > div.bbs1view1 > div.substance"
+      ).text();
+
       dataArr.push(data);
     }
-  });
+  }
+  dataArr = preprocessDatas(dataArr);
 
   return dataArr;
 };
