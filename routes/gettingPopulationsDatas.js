@@ -54,12 +54,6 @@ const gettingPopulationDataPerRegion = async (c1) => {
     ).set(populationData);
   }
 
-  var populationSnippetData = {};
-  populationSnippetData["births"] = populationData["Live births(persons)"];
-  populationSnippetData["deaths"] = populationData["Deaths(persons)"];
-  populationSnippetData["decrease"] =
-    populationData["Natural increase(persons)"];
-
   db.doc(`regions/${populationDataFileds[0]["C1_NM_ENG"]}`).update({
     "populationSnippet.births": populationData["Live births(persons)"],
     "populationSnippet.deaths": populationData["Deaths(persons)"],

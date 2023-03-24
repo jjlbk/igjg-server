@@ -22,7 +22,8 @@ const initRegions = async () => {
     const regionRef = regionsRef.doc(householdsData["C1_NM_ENG"]);
 
     await regionRef.set({
-      name: householdsData["C1_NM_ENG"],
+      name: householdsData["C1_NM"],
+      nameENG: householdsData["C1_NM_ENG"],
       placedAt: new GeoPoint(0, 0),
       populationSnippet: {
         births: 0,

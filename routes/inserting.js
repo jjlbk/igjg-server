@@ -56,11 +56,13 @@ const insertDatasToPolices = async (datas) => {
 
       if (keywordRes.exists) {
         await keywordsRef.doc(keyword).update({
+          name: keyword,
           frequency: FieldValue.increment(1),
           updatedAt: FieldValue.serverTimestamp(),
         });
       } else {
         await keywordsRef.doc(keyword).set({
+          name: keyword,
           frequency: 1,
           updatedAt: FieldValue.serverTimestamp(),
         });
@@ -114,11 +116,13 @@ const insertDatasToNews = async (datas) => {
 
       if (keywordRes.exists) {
         keywordsRef.doc(keyword).update({
+          name: keyword,
           frequency: FieldValue.increment(1),
           updatedAt: FieldValue.serverTimestamp(),
         });
       } else {
         keywordsRef.doc(keyword).set({
+          name: keyword,
           frequency: 1,
           updatedAt: FieldValue.serverTimestamp(),
         });
