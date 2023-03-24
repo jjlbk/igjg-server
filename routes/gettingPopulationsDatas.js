@@ -25,6 +25,13 @@ const gettingPopulationDataPerRegion = async (c1) => {
     )
   ).data;
 
+  // HDCD
+  if (populationDataFileds[0]["C1_NM_ENG"] == "Sejong") {
+    populationDataFileds[0]["C1_NM_ENG"] = "Sejong-si";
+  } else if (populationDataFileds[0]["C1_NM_ENG"] == "Jeju") {
+    populationDataFileds[0]["C1_NM_ENG"] = "Jeju-do";
+  }
+
   var populationData = {};
   for (let populationDataFiled of populationDataFileds) {
     populationData[populationDataFiled["C2_NM_ENG"]] =
@@ -63,7 +70,7 @@ const gettingPopulationDataPerRegion = async (c1) => {
 const gettingHouseholdsDatas = async () => {
   var householdsDatas = (
     await axios.get(
-      `https://kosis.kr/openapi/Param/statisticsParameterData.do?method=getList&apiKey=${process.env.KOSIS_API_KEY}&itmId=T1+&objL1=11+26+27+28+29+30+31+41110+41280+41460+48110+48120+50+&objL2=&objL3=&objL4=&objL5=&objL6=&objL7=&objL8=&format=json&jsonVD=Y&prdSe=M&newEstPrdCnt=1&orgId=101&tblId=DT_1B040B3`
+      `https://kosis.kr/openapi/Param/statisticsParameterData.do?method=getList&apiKey=${process.env.KOSIS_API_KEY}&itmId=T1+&objL1=00+11+26+27+28+29+30+31+36+41+41110+41280+41460+42+43+44+45+46+47+48+48120+50+&objL2=&objL3=&objL4=&objL5=&objL6=&objL7=&objL8=&format=json&jsonVD=Y&prdSe=M&newEstPrdCnt=1&orgId=101&tblId=DT_1B040B3`
     )
   ).data;
 

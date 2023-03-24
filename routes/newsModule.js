@@ -65,7 +65,7 @@ const getNewsFromSuwon = async (startPage, endPage) => {
         date: uploadDate,
         url: concat,
         img: null,
-        region: "Suwon",
+        region: "Suwon-si",
       };
 
       // inner page crawling
@@ -150,7 +150,7 @@ const getNewsFromYongin = async (startPage, endPage) => {
           $(
             `#contents > div.cont_box > div.t_photo > ul > li:nth-child(${i}) > div > p > a > img`
           ).attr("src"),
-        region: "Yongin",
+        region: "Yongin-si",
       };
       // inner page crawling
       const tmp = await axios.get(concat);
@@ -224,7 +224,7 @@ const getNewsFromGoyang = async (startPage, endPage) => {
         date: uploadDate,
         url: concat,
         img: null,
-        region: "Goyang",
+        region: "Goyang-si",
       };
 
       // inner page crawling
@@ -295,7 +295,7 @@ const getNewsFromChangwon = async (startPage, endPage) => {
         date: uploadDate,
         url: concat,
         img: null,
-        region: "Changwon",
+        region: "Changwon-si",
       };
 
       // inner page crawling
