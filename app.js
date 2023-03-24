@@ -10,10 +10,11 @@ const {
   applicationDefault,
   cert,
 } = require("firebase-admin/app");
-const serviceAccount = require("./serviceAccountKey.json");
 initializeApp({
-  credential: cert(serviceAccount),
+  credential: applicationDefault(),
 });
+
+const { initRegions } = require("./models/init");
 
 var indexRouter = require("./routes/index");
 var crawlingRouter = require("./routes/crawling");
@@ -30,6 +31,8 @@ app.use(cookieParser());
 app.use("/", indexRouter);
 app.use("/crawling", crawlingRouter);
 app.use("/news", newsRouter);
+
+// initRegions();
 
 app.use(function (req, res, next) {
   next(createError(404));

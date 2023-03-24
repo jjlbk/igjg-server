@@ -47,23 +47,27 @@ const insertDatasToPolices = async (datas) => {
       contentText: data.contentText,
       keywords: data.keywords,
       region: data.region,
+      createdAt: FieldValue.serverTimestamp(),
     });
 
     for (let keyword of data.keywords) {
       const keywordsRef = db.collection(`/regions/${data.region}/keywords`);
-      const keywordRes = keywordsRef.doc(keyword).get();
+      const keywordRes = await keywordsRef.doc(keyword).get();
 
-      if (!(await keywordRes).exists) {
-        await keywordsRef.doc(keyword).set({
-          frequency: 1,
-        });
-      } else {
+      if (keywordRes.exists) {
         await keywordsRef.doc(keyword).update({
           frequency: FieldValue.increment(1),
+          updatedAt: FieldValue.serverTimestamp(),
+        });
+      } else {
+        await keywordsRef.doc(keyword).set({
+          frequency: 1,
+          updatedAt: FieldValue.serverTimestamp(),
         });
       }
     }
 
+    // HDCD
     db.doc(`regions/${data.region}`).update({
       "policySnippet.works": FieldValue.increment(
         ["일자리창출", "일자리정책과", "일자리창출과"].includes(data.dept)
@@ -101,19 +105,22 @@ const insertDatasToNews = async (datas) => {
       contentText: data.contentText,
       keywords: data.keywords,
       region: data.region,
+      createdAt: FieldValue.serverTimestamp(),
     });
 
     for (let keyword of data.keywords) {
       const keywordsRef = db.collection(`/regions/${data.region}/keywords`);
-      const keywordRes = keywordsRef.doc(keyword).get();
+      const keywordRes = await keywordsRef.doc(keyword).get();
 
-      if (!(await keywordRes).exists) {
-        await keywordsRef.doc(keyword).set({
-          frequency: 1,
+      if (keywordRes.exists) {
+        keywordsRef.doc(keyword).update({
+          frequency: FieldValue.increment(1),
+          updatedAt: FieldValue.serverTimestamp(),
         });
       } else {
-        await keywordsRef.doc(keyword).update({
-          frequency: FieldValue.increment(1),
+        keywordsRef.doc(keyword).set({
+          frequency: 1,
+          updatedAt: FieldValue.serverTimestamp(),
         });
       }
     }

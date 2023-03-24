@@ -68,7 +68,7 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
             .attr("onclick")
             .match(/\d+/g)[1] +
           "&bbsCd=1042&pageType=&showSummaryYn=N&delDesc=&q_ctgCd=&q_currPage=1&q_sortNam",
-        region: "Suwon",
+        region: "Suwon-si",
       };
 
       // inner page crawling
@@ -141,7 +141,7 @@ const getPublishingFromYongin = async (startPage, endPage) => {
           $(
             `#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(${i}) > td.td_al > a`
           ).attr("href"),
-        region: "Yongin",
+        region: "Yongin-si",
       };
 
       // inner page crawling
@@ -217,7 +217,7 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
             .attr("onclick")
             .match(/\d+/g)[1] +
           "&q_currPage=1&q_pClCode=",
-        region: "Goyang",
+        region: "Goyang-si",
       };
 
       // inner page crawling
@@ -288,7 +288,7 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
           $(
             `#listForm > div.list2table1.rspnsv > table > tbody > tr:nth-child(${i}) > td.tal > a`
           ).attr("href"),
-        region: "Changwon",
+        region: "Changwon-si",
       };
 
       // inner page crawling
