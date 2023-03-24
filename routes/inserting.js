@@ -63,6 +63,30 @@ const insertDatasToPolices = async (datas) => {
         });
       }
     }
+
+    db.doc(`regions/${data.region}`).update({
+      "policySnippet.works": FieldValue.increment(
+        ["일자리창출", "일자리정책과", "일자리창출과"].includes(data.dept)
+          ? 1
+          : 0
+      ),
+      "policySnippet.homes": FieldValue.increment(
+        ["주거복지팀", "주택과", "주택정책과"].includes(data.dept) ? 1 : 0
+      ),
+      "policySnippet.edus": FieldValue.increment(
+        [
+          "교육정책팀",
+          "교육청소년과",
+          "아동청소년과",
+          "여성청소년보육과",
+        ].includes(data.dept)
+          ? 1
+          : 0
+      ),
+      "policySnippet.births": FieldValue.increment(
+        ["여성정책팀", "여성가족과"].includes(data.dept) ? 1 : 0
+      ),
+    });
   }
 };
 
