@@ -95,19 +95,19 @@ const task_update_publishing_changwon = new AsyncTask(
   }
 );
 const job_update_publishing_suwon = new SimpleIntervalJob(
-  { days: 1 },
+  { hours: 1 },
   task_update_publishing_suwon
 );
 const job_update_publishing_yongin = new SimpleIntervalJob(
-  { days: 1 },
+  { hours: 1 },
   task_update_publishing_yongin
 );
 const job_update_publishing_goyang = new SimpleIntervalJob(
-  { days: 1 },
+  { hours: 1 },
   task_update_publishing_goyang
 );
 const job_update_publishing_changwon = new SimpleIntervalJob(
-  { days: 1 },
+  { hours: 1 },
   task_update_publishing_changwon
 );
 scheduler.addSimpleIntervalJob(job_update_publishing_suwon);
@@ -136,11 +136,11 @@ const task_update_populatons = new Task(
   }
 );
 const job_update_households = new SimpleIntervalJob(
-  { days: 1 },
+  { hours: 1 },
   task_update_households
 );
 const job_update_populations = new SimpleIntervalJob(
-  { days: 1 },
+  { hours: 1 },
   task_update_populatons
 );
 scheduler.addSimpleIntervalJob(job_update_households);
