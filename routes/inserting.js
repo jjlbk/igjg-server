@@ -41,7 +41,8 @@ const insertDatasToPolices = async (datas) => {
     const docRef = db.collection("policies").doc();
     docRef.set({
       title: data.title,
-      registrationDate: Timestamp.fromDate(new Date(data.date)),
+      registrationNum: data.num,
+      registrationDate: data.date,
       department: data.dept,
       contentURL: data.url,
       contentText: data.contentText,
@@ -101,7 +102,8 @@ const insertDatasToNews = async (datas) => {
     const docRef = db.collection("news").doc();
     docRef.set({
       title: data.title,
-      registrationDate: Timestamp.fromDate(new Date(data.date)),
+      registrationNum: data.num,
+      registrationDate: data.date,
       thumbnailURL: data.img,
       contentURL: data.url,
       contentText: data.contentText,

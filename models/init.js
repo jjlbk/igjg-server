@@ -62,6 +62,112 @@ const initRegions = async () => {
     .update({ placedAt: new GeoPoint(35.219, 128.583) });
 };
 
+const initPolicies = async () => {
+  const policiesRef = db.collection("policies");
+
+  policiesRef.add({
+    title: "dummyTitle",
+    registrationNum: -1,
+    registrationDate: Timestamp.fromDate(new Date()),
+    department: "dummyDept",
+    contentURL: "dummyUrl",
+    contentText: "dummyContentText",
+    keywords: ["dummyKeyword1", "dummyKeyword2"],
+    region: "Suwon-si",
+    createdAt: FieldValue.serverTimestamp(),
+  });
+
+  policiesRef.add({
+    title: "dummyTitle",
+    registrationNum: -1,
+    registrationDate: Timestamp.fromDate(new Date()),
+    department: "dummyDept",
+    contentURL: "dummyUrl",
+    contentText: "dummyContentText",
+    keywords: ["dummyKeyword1", "dummyKeyword2"],
+    region: "Yongin-si",
+    createdAt: FieldValue.serverTimestamp(),
+  });
+
+  policiesRef.add({
+    title: "dummyTitle",
+    registrationNum: -1,
+    registrationDate: Timestamp.fromDate(new Date()),
+    department: "dummyDept",
+    contentURL: "dummyUrl",
+    contentText: "dummyContentText",
+    keywords: ["dummyKeyword1", "dummyKeyword2"],
+    region: "Goyang-si",
+    createdAt: FieldValue.serverTimestamp(),
+  });
+
+  policiesRef.add({
+    title: "dummyTitle",
+    registrationNum: -1,
+    registrationDate: Timestamp.fromDate(new Date()),
+    department: "dummyDept",
+    contentURL: "dummyUrl",
+    contentText: "dummyContentText",
+    keywords: ["dummyKeyword1", "dummyKeyword2"],
+    region: "Changwon-si",
+    createdAt: FieldValue.serverTimestamp(),
+  });
+};
+
+const initNews = async () => {
+  const newsRef = db.collection("news");
+
+  newsRef.add({
+    title: "dummyTitle",
+    registrationNum: -1,
+    registrationDate: Timestamp.fromDate(new Date()),
+    thumbnailURL: "dummyThumbnailURL",
+    contentURL: "dummyContentURL",
+    contentText: "dummyContentText",
+    keywords: ["dummyKeyword1", "dummyKeyword2"],
+    region: ["Suwon-si"],
+    createdAt: FieldValue.serverTimestamp(),
+  });
+
+  newsRef.add({
+    title: "dummyTitle",
+    registrationNum: -1,
+    registrationDate: Timestamp.fromDate(new Date()),
+    thumbnailURL: "dummyThumbnailURL",
+    contentURL: "dummyContentURL",
+    contentText: "dummyContentText",
+    keywords: ["dummyKeyword1", "dummyKeyword2"],
+    region: ["Yongin-si"],
+    createdAt: FieldValue.serverTimestamp(),
+  });
+
+  newsRef.add({
+    title: "dummyTitle",
+    registrationNum: -1,
+    registrationDate: Timestamp.fromDate(new Date()),
+    thumbnailURL: "dummyThumbnailURL",
+    contentURL: "dummyContentURL",
+    contentText: "dummyContentText",
+    keywords: ["dummyKeyword1", "dummyKeyword2"],
+    region: ["Goyang-si"],
+    createdAt: FieldValue.serverTimestamp(),
+  });
+
+  newsRef.add({
+    title: "dummyTitle",
+    registrationNum: -1,
+    registrationDate: Timestamp.fromDate(new Date()),
+    thumbnailURL: "dummyThumbnailURL",
+    contentURL: "dummyContentURL",
+    contentText: "dummyContentText",
+    keywords: ["dummyKeyword1", "dummyKeyword2"],
+    region: ["Changwon-si"],
+    createdAt: FieldValue.serverTimestamp(),
+  });
+};
+
 module.exports = {
   initRegions,
+  initPolicies,
+  initNews,
 };
