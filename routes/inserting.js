@@ -13,15 +13,15 @@ const preprocessDatas = async (datas) => {
   var preprocessedDatas = [];
   for (let data of datas) {
     // 한글 제외하고 모조리 제거
-    if (!/^[^\u0000-\u007F]*$/.test(data.contentText)) {
-      editedData = data.contentText.replace(
+    if (!/^[^\u0000-\u007F]*$/.test(data.title)) {
+      editedData = data.title.replace(
         /[^\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7FF\uFF00-\uFFEF]/g,
         " "
       );
     }
 
-    // 형태소 분석
-    var morphemes = await ExecuteMorphModulePromise(editedData);
+    // **제목만** 형태소 분석 및 키워드 추출
+    var morphemes = await ExecuteMorphModulePromise(data.title);
 
     // 키워드 추출
     var keywords = [];
