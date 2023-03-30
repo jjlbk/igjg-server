@@ -30,7 +30,12 @@ app.use("/", indexRouter);
 app.use("/crawling", crawlingRouter);
 app.use("/news", newsRouter);
 
-const { initRegions } = require("./models/init");
+const { initRegions, initPolicies, initNews } = require("./models/init");
+
+// initRegions();
+// initPolicies();
+// initNews();
+
 const {
   ToadScheduler,
   AsyncTask,
@@ -48,8 +53,6 @@ const {
   gettingPopulationsDatas,
 } = require("./routes/gettingPopulationsDatas");
 const { insertDatasToPolices } = require("./routes/inserting");
-
-// initRegions();
 
 const scheduler = new ToadScheduler();
 
