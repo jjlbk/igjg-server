@@ -5,6 +5,9 @@ const cheerio = require("cheerio");
 const { response } = require("express");
 const log = console.log;
 
+const { getFirestore } = require("firebase-admin/firestore");
+const db = getFirestore();
+
 // 보도자료 모듈
 // data = [title, date, url, img, region, contentText, keywords]
 
@@ -17,7 +20,12 @@ const printToday = 1;
 const getNewsFromSuwon = async (startPage, endPage) => {
   var dataArr = [];
   const promises = [];
-  const today = new Date().toISOString().slice(0, 10);
+  const latestNum = db
+    .collection("news")
+    .where("region", "==", "Suwon-si")
+    .orderBy("registrationNum", "desc")
+    .limit(1)
+    .get();
 
   const getHtml = async (cpage) => {
     try {
@@ -38,13 +46,14 @@ const getNewsFromSuwon = async (startPage, endPage) => {
   for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
-      const uploadDate = $(
-        `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
+      const uploadNum = $(
+        `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(1)`
       )
         .text()
         .trim();
-      if (today !== uploadDate && printToday == 1) {
-        break;
+
+      if (printToday != 0 && latestNum >= uploadNum) {
+        continue;
       }
 
       const concat =
@@ -62,7 +71,12 @@ const getNewsFromSuwon = async (startPage, endPage) => {
         )
           .text()
           .trim(),
-        date: uploadDate,
+        num: uploadNum,
+        date: $(
+          `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
+        )
+          .text()
+          .trim(),
         url: concat,
         img: null,
         region: "Suwon-si",
@@ -97,7 +111,12 @@ const getNewsFromSuwon = async (startPage, endPage) => {
 const getNewsFromYongin = async (startPage, endPage) => {
   var dataArr = [];
   const promises = [];
-  const today = new Date().toISOString().slice(0, 10);
+  const latestNum = db
+    .collection("news")
+    .where("region", "==", "Yongin-si")
+    .orderBy("registrationNum", "desc")
+    .limit(1)
+    .get();
 
   const getHtml = async (cpage) => {
     try {
@@ -118,13 +137,14 @@ const getNewsFromYongin = async (startPage, endPage) => {
   for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
-      const uploadDate = $(
-        `#contents > div.cont_box > div.t_photo > ul > li:nth-child(${i}) > div > dl > dd > ul > li:nth-child(2)`
+      const uploadNum = $(
+        `#contents > div.cont_box > div.t_photo > ul > li:nth-child(${i}) > div > dl > dt > a`
       )
-        .text()
-        .trim();
-      if (today !== uploadDate && printToday == 1) {
-        break;
+        .attr("onclick")
+        .match(/\d+/g)[0];
+
+      if (printToday != 0 && latestNum >= uploadNum) {
+        continue;
       }
 
       const concat =
@@ -142,8 +162,12 @@ const getNewsFromYongin = async (startPage, endPage) => {
         )
           .text()
           .trim(),
-
-        date: uploadDate,
+        num: uploadNum,
+        date: $(
+          `#contents > div.cont_box > div.t_photo > ul > li:nth-child(${i}) > div > dl > dd > ul > li:nth-child(2)`
+        )
+          .text()
+          .trim(),
         url: concat,
         img:
           "https://www.yongin.go.kr/" +
@@ -174,7 +198,12 @@ const getNewsFromYongin = async (startPage, endPage) => {
 const getNewsFromGoyang = async (startPage, endPage) => {
   var dataArr = [];
   const promises = [];
-  const today = new Date().toISOString().slice(0, 10);
+  const latestNum = db
+    .collection("news")
+    .where("region", "==", "Goyang-si")
+    .orderBy("registrationNum", "desc")
+    .limit(1)
+    .get();
 
   const getHtml = async (cpage) => {
     try {
@@ -195,14 +224,14 @@ const getNewsFromGoyang = async (startPage, endPage) => {
   for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
-      const uploadDate = $(
-        `#content > table > tbody > tr:nth-child(${i}) > td.date`
+      const uploadNum = $(
+        `#content > table > tbody > tr:nth-child(${i}) > td.subject.text-left > a`
       )
-        .text()
-        .replaceAll(".", "-")
-        .trim();
-      if (today !== uploadDate && printToday == 1) {
-        break;
+        .attr("onclick")
+        .match(/\d+/g)[1];
+
+      if (printToday != 0 && latestNum >= uploadNum) {
+        continue;
       }
 
       const concat =
@@ -220,8 +249,11 @@ const getNewsFromGoyang = async (startPage, endPage) => {
         )
           .text()
           .trim(),
-
-        date: uploadDate,
+        num: uploadNum,
+        date: $(`#content > table > tbody > tr:nth-child(${i}) > td.date`)
+          .text()
+          .replaceAll(".", "-")
+          .trim(),
         url: concat,
         img: null,
         region: "Goyang-si",
@@ -252,7 +284,12 @@ const getNewsFromGoyang = async (startPage, endPage) => {
 const getNewsFromChangwon = async (startPage, endPage) => {
   var dataArr = [];
   const promises = [];
-  const today = new Date().toISOString().slice(0, 10);
+  const latestNum = db
+    .collection("news")
+    .where("region", "==", "Changwon-si")
+    .orderBy("registrationNum", "desc")
+    .limit(1)
+    .get();
 
   const getHtml = async (cpage) => {
     try {
@@ -273,13 +310,12 @@ const getNewsFromChangwon = async (startPage, endPage) => {
   for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
-      const uploadDate = $(
-        `#listForm > div.list1f1t3i1.default3.bbs-skin-default3 > ul > li:nth-child(${i}) > div > a > span > i > span:nth-child(1)`
-      )
-        .text()
-        .trim();
-      if (today !== uploadDate && printToday == 1) {
-        break;
+      const uploadNum = $(
+        `#listForm > div.list1f1t3i1.default3.bbs-skin-default3 > ul > li:nth-child(${i}) > div > a`
+      ).attr("href");
+
+      if (printToday != 0 && latestNum >= uploadNum) {
+        continue;
       }
 
       const concat =
@@ -292,7 +328,12 @@ const getNewsFromChangwon = async (startPage, endPage) => {
         title: $(
           `#listForm > div.list1f1t3i1.default3.bbs-skin-default3 > ul > li:nth-child(${i}) > div > a > span.wrap1texts > strong`
         ).text(),
-        date: uploadDate,
+        num: uploadNum,
+        date: $(
+          `#listForm > div.list1f1t3i1.default3.bbs-skin-default3 > ul > li:nth-child(${i}) > div > a > span > i > span:nth-child(1)`
+        )
+          .text()
+          .trim(),
         url: concat,
         img: null,
         region: "Changwon-si",

@@ -5,6 +5,9 @@ const cheerio = require("cheerio");
 const { response } = require("express");
 const log = console.log;
 
+const { getFirestore } = require("firebase-admin/firestore");
+const db = getFirestore();
+
 // 시정소식 모듈
 // data = [title, dept, date, url, region, contextHtml, contentText, keywords]
 
@@ -17,7 +20,12 @@ const printToday = 1;
 const getPublishingFromSuwon = async (startPage, endPage) => {
   var dataArr = [];
   const promises = [];
-  const today = new Date().toISOString().slice(0, 10);
+  const latestNum = db
+    .collection("policies")
+    .where("region", "==", "Suwon-si")
+    .orderBy("registrationNum", "desc")
+    .limit(1)
+    .get();
 
   const getHtml = async (cpage) => {
     try {
@@ -38,14 +46,15 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
   for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
-      const uploadDate = $(
-        `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
+      const uploadNum = $(
+        `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(1)`
       )
         .text()
-        .replaceAll("/", "-")
         .trim();
-      if (today !== uploadDate && printToday == 1) {
-        break;
+
+      console.log("latestNum", latestNum);
+      if (printToday == 1 && latestNum >= uploadNum) {
+        continue;
       }
 
       const data = {
@@ -59,7 +68,13 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
         )
           .text()
           .trim(),
-        date: uploadDate,
+        num: uploadNum,
+        date: $(
+          `#contents > div:nth-child(1) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
+        )
+          .text()
+          .replaceAll("/", "-")
+          .trim(),
         url:
           "https://www.suwon.go.kr/web/board/BD_board.view.do?seq=" +
           $(
@@ -93,7 +108,12 @@ const getPublishingFromSuwon = async (startPage, endPage) => {
 const getPublishingFromYongin = async (startPage, endPage) => {
   var dataArr = [];
   const promises = [];
-  const today = new Date().toISOString().slice(0, 10);
+  const latestNum = db
+    .collection("policies")
+    .where("region", "==", "Yongin-si")
+    .orderBy("registrationNum", "desc")
+    .limit(1)
+    .get();
 
   const getHtml = async (cpage) => {
     try {
@@ -114,14 +134,14 @@ const getPublishingFromYongin = async (startPage, endPage) => {
   for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
-      const uploadDate = $(
-        `#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
+      const uploadNum = $(
+        `#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(${i}) > td:nth-child(1)`
       )
         .text()
-        .replaceAll("/", "-")
         .trim();
-      if (today !== uploadDate && printToday == 1) {
-        break;
+
+      if (printToday == 1 && latestNum >= uploadNum) {
+        continue;
       }
 
       const data = {
@@ -135,7 +155,13 @@ const getPublishingFromYongin = async (startPage, endPage) => {
         )
           .text()
           .trim(),
-        date: uploadDate,
+        num: uploadNum,
+        date: $(
+          `#contents > div.cont_box > div.t_list > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`
+        )
+          .text()
+          .replaceAll("/", "-")
+          .trim(),
         url:
           "https://www.yongin.go.kr" +
           $(
@@ -166,7 +192,12 @@ const getPublishingFromYongin = async (startPage, endPage) => {
 const getPublishingFromGoyang = async (startPage, endPage) => {
   var dataArr = [];
   const promises = [];
-  const today = new Date().toISOString().slice(0, 10);
+  const latestNum = db
+    .collection("policies")
+    .where("region", "==", "Goyang-si")
+    .orderBy("registrationNum", "desc")
+    .limit(1)
+    .get();
 
   const getHtml = async (cpage) => {
     try {
@@ -187,14 +218,14 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
   for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
-      const uploadDate = $(
-        `#content > table > tbody > tr:nth-child(${i}) > td.date`
+      const uploadNum = $(
+        `#content > table > tbody > tr:nth-child(${i}) > td.subject.text-left > a`
       )
-        .text()
-        .replaceAll(".", "-")
-        .trim();
-      if (today !== uploadDate && printToday == 1) {
-        break;
+        .attr("onclick")
+        .match(/\d+/g)[1];
+
+      if (printToday == 1 && latestNum >= uploadNum) {
+        continue;
       }
 
       const data = {
@@ -208,7 +239,11 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
         )
           .text()
           .trim(),
-        date: uploadDate,
+        num: uploadNum,
+        date: $(`#content > table > tbody > tr:nth-child(${i}) > td.date`)
+          .text()
+          .replaceAll(".", "-")
+          .trim(),
         url:
           "https://www.goyang.go.kr/www/user/bbs/BD_selectBbs.do?q_bbsCode=1030&q_bbscttSn=" +
           $(
@@ -240,7 +275,16 @@ const getPublishingFromGoyang = async (startPage, endPage) => {
 const getPublishingFromChangwon = async (startPage, endPage) => {
   var dataArr = [];
   const promises = [];
-  const today = new Date().toISOString().slice(0, 10);
+  var latestNum;
+  const querySnapshot = await db
+    .collection("policies")
+    .where("region", "==", "Changwon-si")
+    .orderBy("registrationNum", "desc")
+    .limit(1)
+    .get();
+  querySnapshot.forEach((doc) => {
+    latestNum = doc.data().registrationNum;
+  });
 
   const getHtml = async (cpage) => {
     try {
@@ -261,13 +305,14 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
   for (const response of responses) {
     const $ = cheerio.load(response.data);
     for (let i = 1; i <= 10; i++) {
-      const uploadDate = $(
-        `#listForm > div.list2table1.rspnsv > table > tbody > tr:nth-child(${i}) > td:nth-child(4)`
+      const uploadNum = $(
+        `#listForm > div.list2table1.rspnsv > table > tbody > tr:nth-child(${i}) > td:nth-child(1)`
       )
         .text()
         .trim();
-      if (today !== uploadDate && printToday == 1) {
-        break;
+
+      if (printToday == 1 && latestNum >= uploadNum) {
+        continue;
       }
 
       const data = {
@@ -282,7 +327,12 @@ const getPublishingFromChangwon = async (startPage, endPage) => {
         )
           .text()
           .trim(),
-        date: uploadDate,
+        num: uploadNum,
+        date: $(
+          `#listForm > div.list2table1.rspnsv > table > tbody > tr:nth-child(${i}) > td:nth-child(4)`
+        )
+          .text()
+          .trim(),
         url:
           "https://www.changwon.go.kr/cwportal/10310/10429/10430.web" +
           $(
