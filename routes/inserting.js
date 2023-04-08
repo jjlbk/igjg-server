@@ -21,7 +21,7 @@ const preprocessDatas = async (datas) => {
     }
 
     // **제목만** 형태소 분석 및 키워드 추출
-    var morphemes = await ExecuteMorphModulePromise(data.title);
+    var morphemes = await ExecuteMorphModulePromise(editedData);
 
     // 키워드 추출
     var keywords = [];
@@ -71,29 +71,48 @@ const insertDatasToPolices = async (datas) => {
     }
 
     // HDCD
-    db.doc(`regions/${data.region}`).update({
-      "policySnippet.works": FieldValue.increment(
-        ["일자리창출", "일자리정책과", "일자리창출과"].includes(data.dept)
-          ? 1
-          : 0
-      ),
-      "policySnippet.homes": FieldValue.increment(
-        ["주거복지팀", "주택과", "주택정책과"].includes(data.dept) ? 1 : 0
-      ),
-      "policySnippet.edus": FieldValue.increment(
-        [
-          "교육정책팀",
-          "교육청소년과",
-          "아동청소년과",
-          "여성청소년보육과",
-        ].includes(data.dept)
-          ? 1
-          : 0
-      ),
-      "policySnippet.births": FieldValue.increment(
-        ["여성정책팀", "여성가족과"].includes(data.dept) ? 1 : 0
-      ),
-    });
+    const departmentsRef = db.collection("departments");
+    const departmentsRes = await departmentsRef
+      .where("name", "==", data.dept)
+      .get();
+
+    console.log(data.dept, departmentsRes.empty);
+
+    if (!departmentsRes.empty) {
+      var categoryOfDept;
+      departmentsRes.forEach(async (doc) => {
+        categoryOfDept = await doc.data().category;
+      });
+
+      switch (categoryOfDept) {
+        case "births":
+          db.doc(`regions/${data.region}`).update({
+            "policySnippet.births": FieldValue.increment(1),
+          });
+          break;
+        case "edus":
+          db.doc(`regions/${data.region}`).update({
+            "policySnippet.edus": FieldValue.increment(1),
+          });
+          break;
+        case "homes":
+          db.doc(`regions/${data.region}`).update({
+            "policySnippet.homes": FieldValue.increment(1),
+          });
+          break;
+        case "works":
+          db.doc(`regions/${data.region}`).update({
+            "policySnippet.works": FieldValue.increment(1),
+          });
+          break;
+      }
+    } else {
+      await departmentsRef.doc(data.dept).set({
+        name: data.dept,
+        category: -1,
+        createdAt: FieldValue.serverTimestamp(),
+      });
+    }
   }
 };
 
